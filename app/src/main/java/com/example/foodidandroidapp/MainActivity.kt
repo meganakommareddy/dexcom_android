@@ -18,6 +18,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,9 +36,16 @@ import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+@Composable
+fun InferenceResultText(result: String) {
+    Text(text = result)
+}
+
 class MainActivity : ComponentActivity() {
     private var interpreter: Interpreter? = null
     private var imageBitmap: Bitmap? = null
+    private var resultText by mutableStateOf("")
+    private lateinit var foodNames: List<String>
 
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -70,12 +80,14 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Greeting("Android")
                         CameraButton { checkCameraPermissionAndOpen() }
+                        InferenceResultText(resultText)
                     }
                 }
             }
         }
         FirebaseApp.initializeApp(this)
         downloadModel()
+        readCsvFile()
     }
 
     private fun checkCameraPermissionAndOpen() {
@@ -165,6 +177,17 @@ class MainActivity : ComponentActivity() {
         val maxValue = result[maxIndex].toInt()
 
         Log.d("InferenceResult", "Index of max value: $maxIndex, Max value: $maxValue")
+        resultText = "Index of max value: $maxIndex, Max value: $maxValue"
+
+        resultText = "Predicted food: ${foodNames[maxIndex]}"
+    }
+
+    private fun readCsvFile() {
+        val csvReader = resources.openRawResource(R.raw.food_names).bufferedReader()
+        val lines = csvReader.readLines()
+        foodNames = lines.drop(1).map { line ->
+            line.split(",")[1]
+        }
     }
 }
 
