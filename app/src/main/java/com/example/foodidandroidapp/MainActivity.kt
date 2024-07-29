@@ -31,7 +31,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Alignment
 
 
 class MainActivity : ComponentActivity() {
