@@ -1,18 +1,24 @@
 package com.example.foodidandroidapp
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.foodidandroidapp.ui.theme.FoodIDAndroidAppTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ml.modeldownloader.CustomModel
@@ -23,10 +29,16 @@ import org.tensorflow.lite.Interpreter
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
 
 
 class MainActivity : ComponentActivity() {
     private var interpreter: Interpreter? = null
+    private val CAMERA_PERMISSION_CODE = 100
+    private val CAMERA_REQUEST_CODE = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -47,8 +59,6 @@ class MainActivity : ComponentActivity() {
         // Download and initialize the model
         downloadModel()
     }
-
-
 
 
     private fun downloadModel() {
@@ -133,6 +143,14 @@ class MainActivity : ComponentActivity() {
 
     }
 
+}
+
+
+@Composable
+fun CameraButton(onButtonClick: () -> Unit) {
+    Button(onClick = onButtonClick) {
+        Text("Take Picture")
+    }
 }
 
 @Composable
